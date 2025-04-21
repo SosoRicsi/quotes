@@ -1,0 +1,19 @@
+{
+    "name": "jarkoricsi/quote",
+    "description": "An easy-to-use quote package.",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "JarkoRicsi\\Quote\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jarkó Richárd",
+            "email": "jarkoricsi16@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3"
+    }
+}
