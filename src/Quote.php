@@ -34,10 +34,10 @@ class Quote
 	) {
 		$this->language = $language;
 		$this->language_path = $language_path;
-		
+
 		$this->checkLanguagePath();
 
-		$this->language_file = require ($language_path.'/'.$language.'.php');
+		$this->language_file = require $language_path . '/' . $language . '.php';
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Quote
 	 * 
 	 * @return array<string>
 	 */
-	public function getAuthors(): array
+	public function getAllAuthors(): array
 	{
 		$authors = [];
 
@@ -67,14 +67,33 @@ class Quote
 	}
 
 	/**
+	 * Get all quotes from an author.
+	 * 
+	 * @param string $author The name of the author.
+	 * @return array<string>
+	 */
+	public function getAllQuotesByAuthor(string $author): array
+	{
+		$quotes = [];
+
+		foreach ($this->language_file as $quote) {
+			if ($quote['author'] === $author) {
+				$quotes[] = $quote['quote'];
+			}
+		}
+
+		return $quotes;
+	}
+
+	/**
 	 * Check for the language file.
 	 * 
 	 * @return void
 	 * @throws LanguageFileNotFoundException
 	 */
-	protected function checkLanguagePath(): void
+	protected function checkLanguageFile(): void
 	{
-		$language_file = file_exists($this->language_path.'/'.$this->language.'.php');
+		$language_file = file_exists($this->language_path . '/' . $this->language . '.php');
 
 		if (!$language_file) {
 			throw new LanguageFileNotFoundException("Language [{$this->language}] file for quote not found!");
