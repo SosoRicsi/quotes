@@ -51,6 +51,22 @@ class Quote
 	}
 
 	/**
+	 * Get all quote authors from the language file.
+	 * 
+	 * @return array<string>
+	 */
+	public function getAuthors(): array
+	{
+		$authors = [];
+
+		foreach ($this->language_file as $quote) {
+			$authors[] = $quote['author'];
+		}
+
+		return $authors;
+	}
+
+	/**
 	 * Check for the language file.
 	 * 
 	 * @return void
