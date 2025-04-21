@@ -35,7 +35,7 @@ class Quote
 		$this->language = $language;
 		$this->language_path = $language_path;
 
-		$this->checkLanguagePath();
+		$this->checkLanguageFile();
 
 		$this->language_file = require $language_path . '/' . $language . '.php';
 	}
