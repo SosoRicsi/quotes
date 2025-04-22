@@ -2,7 +2,10 @@
 
 namespace JarkoRicsi\Quote;
 
+use JarkoRicsi\Quote\Exceptions\AuthorNotFoundException;
 use JarkoRicsi\Quote\Exceptions\LanguageFileNotFoundException;
+use JarkoRicsi\Quote\Exceptions\NoQuotesByAuthorException;
+use NoRewindIterator;
 
 /**
  * A simple, easy-to-use Quote package for PHP.
@@ -43,7 +46,7 @@ class Quote
 	/**
 	 * Generate a random quote from the language file.
 	 * 
-	 * @return array<string, string>
+	 * @return array<string, string> A random quote from the language file. Contains the author and the quote.
 	 */
 	public function random(): array
 	{
@@ -53,7 +56,7 @@ class Quote
 	/**
 	 * Get all quote authors from the language file.
 	 * 
-	 * @return array<string>
+	 * @return array<string> All of the authors.
 	 */
 	public function getAllAuthors(): array
 	{
@@ -63,14 +66,15 @@ class Quote
 			$authors[] = $quote['author'];
 		}
 
-		return $authors;
+		return array_unique($authors);
 	}
 
 	/**
 	 * Get all quotes from an author.
 	 * 
 	 * @param string $author The name of the author.
-	 * @return array<string>
+	 * @return string[] All quotes from the author.
+	 * @throws NoQuotesByAuthorException
 	 */
 	public function getAllQuotesByAuthor(string $author): array
 	{
@@ -82,7 +86,66 @@ class Quote
 			}
 		}
 
+		if (empty($quotes)) {
+			throw new NoQuotesByAuthorException("No quotes found for author [{$author}].");
+		}
+
 		return $quotes;
+	}
+
+	/**
+	 * Get a random quote from a specific author.
+	 * 
+	 * @param string $author The name of the author.
+	 * @return string The random quote from the author.
+	 * @throws NoQuotesByAuthorException
+	 */
+	public function getRandomQuoteByAuthor(string $author): string
+	{
+		$quotes = $this->getAllQuotesByAuthor($author);
+
+		if (empty($quotes)) {
+			throw new NoQuotesByAuthorException("No quotes found for author [{$author}].");
+		}
+
+		return $quotes[array_rand($quotes)];
+	}
+
+	/**
+	 * Get a random author from the language file.
+	 * 
+	 * @return string The random author.
+	 * @throws AuthorNotFoundException
+	 */
+	public function getRandomAuthor(): string
+	{
+		$authors = $this->getAllAuthors();
+
+		if (empty($authors)) {
+			throw new AuthorNotFoundException("No authors found in the language file.");
+		}
+
+		return $authors[array_rand($authors)];
+	}
+
+	/**
+	 * Get all informations from the language file.
+	 * 
+	 * @return array{
+	 *     number_of_quotes: int,
+	 *     all_quotes: array<int, array<string, string>>,
+	 *     number_of_authors: int,
+	 *     all_authors: array<int, string>
+	 * }
+	 */
+	public function getQuotesInformation(): array
+	{
+		return [
+			'number_of_quotes' => count(array_values($this->language_file)),
+			'all_quotes' => array_values($this->language_file),
+			'number_of_authors' => count($this->getAllAuthors()),
+			'all_authors' => $this->getAllAuthors()
+		];
 	}
 
 	/**
@@ -93,9 +156,9 @@ class Quote
 	 */
 	protected function checkLanguageFile(): void
 	{
-		$language_file = file_exists($this->language_path . '/' . $this->language . '.php');
+		$file_path = file_exists($this->language_path . '/' . $this->language . '.php');
 
-		if (!$language_file) {
+		if (!$file_path) {
 			throw new LanguageFileNotFoundException("Language [{$this->language}] file for quote not found!");
 		}
 	}
