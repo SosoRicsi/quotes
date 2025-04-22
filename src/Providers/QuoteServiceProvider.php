@@ -1,5 +1,7 @@
 <?php
 
+namespace JarkoRicsi\Quote\Providers;
+
 use Illuminate\Support\ServiceProvider;
 use JarkoRicsi\Quote\Quote;
 
