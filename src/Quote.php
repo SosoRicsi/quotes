@@ -5,7 +5,6 @@ namespace JarkoRicsi\Quote;
 use JarkoRicsi\Quote\Exceptions\AuthorNotFoundException;
 use JarkoRicsi\Quote\Exceptions\LanguageFileNotFoundException;
 use JarkoRicsi\Quote\Exceptions\NoQuotesByAuthorException;
-use NoRewindIterator;
 
 /**
  * A simple, easy-to-use Quote package for PHP.
